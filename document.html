@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <p>
+      &lt;!DOCTYPE html&gt; &lt;html lang="ja"&gt; &lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;meta name="viewport"
+      content="width=device-width, initial-scale=1.0"&gt; &lt;title&gt;リズム天国
+      リズムゲーム全部言えるかな？&lt;/title&gt; &lt;style&gt; body { font-family: sans-serif; max-width: 800px; margin:
+      0 auto; padding: 20px; background: #fff9e6; color: #333; } h1 { text-align: center; color: #e60012; } .controls {
+      text-align: center; margin-bottom: 20px; position: sticky; top: 0; background: #fff9e6; padding: 10px 0;
+      border-bottom: 2px solid #ffcc00; } #timer { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+      input[type="text"] { font-size: 18px; padding: 8px; width: 60%; max-width: 300px; border: 2px solid #e60012;
+      border-radius: 5px; } button { font-size: 16px; padding: 8px 16px; cursor: pointer; background: #e60012; color:
+      white; border: none; border-radius: 5px; } button:disabled { background: #ccc; } .series-title { background:
+      #ffcc00; padding: 5px 10px; margin-top: 20px; border-radius: 5px; font-weight: bold; } .grid { display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin-top: 10px; } .card { background:
+      #eee; padding: 10px; border-radius: 5px; text-align: center; font-size: 14px; color: transparent; border: 1px
+      solid #ddd; user-select: none; } .card.solved { background: #ffffff; color: #333; font-weight: bold; border-color:
+      #e60012; } .card.missed { background: #ffecec; color: #d00; border-color: #d00; } .footer { margin-top: 40px;
+      font-size: 12px; color: #666; text-align: center; } &lt;/style&gt; &lt;/head&gt; &lt;body&gt;
+      &lt;h1&gt;リズム天国検定&lt;/h1&gt; &lt;div class="controls"&gt; &lt;div id="timer"&gt;00:00&lt;/div&gt;
+      &lt;div&gt;正解数: &lt;span id="score"&gt;0&lt;/span&gt; / &lt;span id="total"&gt;0&lt;/span&gt;&lt;/div&gt;
+      &lt;div style="margin-top: 10px;"&gt; &lt;button id="startBtn" onclick="startGame()"&gt;スタート&lt;/button&gt;
+      &lt;input type="text" id="answerInput" placeholder="ゲーム名を入力..." disabled&gt; &lt;button id="giveUpBtn"
+      onclick="giveUp()" disabled&gt;降参&lt;/button&gt; &lt;/div&gt; &lt;/div&gt; &lt;div id="board"&gt;&lt;/div&gt;
+      &lt;div class="footer"&gt;
+      ※本サイトは非公式のファンメイド（二次創作）サイトです。任天堂株式会社様とは一切関係ありません。 &lt;/div&gt;
+      &lt;script&gt; // ★ここにお題データを追加していきます（別名・ひらがな表記も登録可能） const gameData = [ { series:
+      "リズム天国 (GBA)", names: ["カラテ家", "からてか"] }, { series: "リズム天国 (GBA)", names: ["リズム脱毛",
+      "りずむだつもう"] }, { series: "リズム天国 (GBA)", names: ["マーチャ", "まーちゃ"] }, { series: "リズム天国
+      (GBA)", names: ["エアーバッター","えあーばったー"] }, { series: "リズム天国 (GBA)", names: ["パチパチ三人衆",
+      "ぱちぱちさんにんしゅう"] }, { series: "リズム天国 (GBA)", names: ["しろいおばけ"] }, { series: "リズム天国
+      (GBA)", names: ["ゐあひぎり", "いあいぎり"] }, { series: "リズム天国 (GBA)", names: ["こっそりラット",
+      "こっそりらっと"] }, { series: "リズム天国 (GBA)", names: ["バイキンはかせ", "ばいきんはかせ"] }, { series:
+      "リズム天国 (GBA)", names: ["ザ☆ぼんおどり", "ざ☆ぼんおどり","ざぼんおどり"] }, { series: "リズム天国 (GBA)",
+      names: ["まほうつかい"] }, { series: "リズム天国 (GBA)", names: ["ショータイム", "しょーたいむ"] }, { series:
+      "リズム天国 (GBA)", names: ["うさぎとび", ] }, { series: "リズム天国 (GBA)", names: ["トランとポリン",
+      "とらんとぽりん"] }, { series: "リズム天国 (GBA)", names: ["スペースダンス","すぺーすだんす"] }, { series:
+      "リズム天国 (GBA)", names: ["クイズ", "くいず"] }, { series: "リズム天国 (GBA)", names: ["ナイトウォーク",
+      "ないとうぉーく"] }, { series: "リズム天国 (GBA)", names: ["リズムお習字", "りずむおしゅうじ"] }, { series:
+      "リズム天国 (GBA)", names: ["ポリリズム", "ぽりりずむ"] }, { series: "リズム天国 (GBA)", names: ["ラップメン",
+      "らっぷめん"] }, { series: "リズム天国 (GBA)", names: ["ホッピングロード", "ほっぴんぐろーど"] }, { series:
+      "リズム天国 (GBA)", names: ["忍者", "にんじゃ"] }, { series: "リズム天国 (GBA)", names: ["トスボーイズ",
+      "といぼーいず"] }, { series: "リズム天国 (GBA)", names: ["花火", "はなび"] }, { series: "リズム天国 (GBA)", names:
+      ["タップダンズ", "たっぷだんず"] }, let startTime, timerInterval, solvedCount = 0; // 画面の初期生成 const board =
+      document.getElementById("board"); const seriesList = [...new Set(gameData.map(item =&gt; item.series))];
+      document.getElementById("total").textContent = gameData.length; seriesList.forEach(series =&gt; { const title =
+      document.createElement("div"); title.className = "series-title"; title.textContent = series;
+      board.appendChild(title); const grid = document.createElement("div"); grid.className = "grid";
+      gameData.forEach((item, index) =&gt; { if (item.series === series) { const card = document.createElement("div");
+      card.className = "card"; card.id = "card-" + index; card.textContent = item.names[0]; // 1つ目の名前を表示用にする
+      grid.appendChild(card); } }); board.appendChild(grid); }); // ひらがなをカタカナに自動変換する関数 function
+      toKatakana(str) { return str.replace(/[\u3041-\u3096]/g, ch =&gt; String.fromCharCode(ch.charCodeAt(0) + 0x60)); }
+      function startGame() { solvedCount = 0; document.getElementById("score").textContent = 0;
+      document.querySelectorAll(".card").forEach(c =&gt; c.className = "card"); const input =
+      document.getElementById("answerInput"); input.disabled = false; input.value = ""; input.focus();
+      document.getElementById("startBtn").disabled = true; document.getElementById("giveUpBtn").disabled = false;
+      startTime = Date.now(); timerInterval = setInterval(() =&gt; { const elapsed = Math.floor((Date.now() - startTime)
+      / 1000); const min = String(Math.floor(elapsed / 60)).padStart(2, "0"); const sec = String(elapsed %
+      60).padStart(2, "0"); document.getElementById("timer").textContent = `${min}:${sec}`; }, 1000); } //
+      入力時の正誤判定 document.getElementById("answerInput").addEventListener("input", function(e) { const val =
+      toKatakana(e.target.value.trim()); if (!val) return; gameData.forEach((item, index) =&gt; { const card =
+      document.getElementById("card-" + index); if (!card.classList.contains("solved")) { const isMatch =
+      item.names.some(name =&gt; toKatakana(name) === val); if (isMatch) { card.classList.add("solved"); e.target.value
+      = ""; // 正解したら入力欄をクリア solvedCount++; document.getElementById("score").textContent = solvedCount;
+      card.scrollIntoView({ behavior: "smooth", block: "center" }); if (solvedCount === gameData.length) {
+      clearInterval(timerInterval); alert("タイム: " + document.getElementById("timer").textContent); resetButtons(); }
+      } } }); }); function giveUp() { clearInterval(timerInterval); gameData.forEach((item, index) =&gt; { const card =
+      document.getElementById("card-" + index); if (!card.classList.contains("solved")) { card.classList.add("missed");
+      } }); resetButtons(); } function resetButtons() { document.getElementById("answerInput").disabled = true;
+      document.getElementById("startBtn").disabled = false; document.getElementById("giveUpBtn").disabled = true; }
+      &lt;/script&gt; &lt;/body&gt; &lt;/html&gt;
+    </p>
+  </body>
+</html>
